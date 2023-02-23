@@ -218,13 +218,16 @@ function displayResponses(val){
       console.log(responseArray);
       let AddResponseContainer=document.getElementById("AddResponses");
       AddResponseContainer.style.backgroundColor="gray"
-      responseArray.forEach(function(value){
-       // console.log(AddResponseContainer)
-        let myDiv=document.createElement("div");
-        myDiv.innerHTML=`<h5>${value.Name}</h5>
-        <p>${value.response}</p>`
-        AddResponseContainer.appendChild(myDiv)
-      })
+      if(responseArray.length!=0){
+        responseArray.forEach(function(value){
+          // console.log(AddResponseContainer)
+           let myDiv=document.createElement("div");
+           myDiv.innerHTML=`<h5>${value.Name}</h5>
+           <p>${value.response}</p>`
+           AddResponseContainer.appendChild(myDiv)
+         })
+      }
+     
 
 }
 
@@ -312,8 +315,8 @@ function displayFiltered(val,val2){
     value.children[0].children[0].innerHTML=`${value.children[0].children[0].innerText.substring(0,index)}<span style="background-color:green">${value.children[0].children[0].innerText.substring(index,index+val2.length)}</span>${value.children[0].children[0].innerText.substring(index+val2.length)}`
    }
    if(index2!=-1){
-    value.children[0].children[1].innerHTML=`${value.children[0].children[1].innerText.substring(0,index)}<span style="background-color:green">${value.children[0].children[1].innerText.substring(index,index+val2.length)}</span>${value.children[0].children[1].innerText.substring(index+val2.length)}`
-    console.log("printing here"+value.children[0].children[1].innerHTML.substring(0,index));
+    value.children[0].children[1].innerHTML=`${value.children[0].children[1].innerText.substring(0,index2)}<span style="background-color:green">${value.children[0].children[1].innerText.substring(index2,index2+val2.length)}</span>${value.children[0].children[1].innerText.substring(index2+val2.length)}`
+    console.log("printing here"+value.children[0].children[1].innerHTML.substring(0,index2));
    }
     
     container.appendChild(value);
