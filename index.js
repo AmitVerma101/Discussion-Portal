@@ -1,5 +1,6 @@
 let disPortal =document.getElementsByClassName("discussionPortal")[0];
 let obj=[];
+let arr=[]
 //console.log(disPortal)
 //Array for the localStorage
 
@@ -39,7 +40,7 @@ function displayLocalStorage(){
    let arrayLocalStorage=JSON.parse(localStorage.getItem("item"));
    
          arrayLocalStorage.forEach(function(value){
-          console.log(value)
+         // console.log(value)
           let myDiv=document.createElement("div");
           myDiv.setAttribute("id",`${value.id}`);
           myDiv.innerHTML=`<button type="button" id="btn${value.id}" class="QuestionsButton" onclick="AddResponsePage(btn${value.id})">
@@ -140,8 +141,8 @@ function AddResponsePage(val1){
 
   myDiv.innerHTML=`<h1>Question</h1>
   <div class="Question" style="background-color: gray;">
-       <h1>${children[0].innerHTML}</h1>
-       <h3>${children[1].innerHTML}</h3>
+       <h1>${children[0].innerText}</h1>
+       <h3>${children[1].innerText}</h3>
 
   </div>
        <button onclick="ResolveTheQuestion(${val2})">Resolve</button>
@@ -265,3 +266,65 @@ localStorage.setItem("item",JSON.stringify(obj));
 
 }
 
+//adding the search functionality
+
+function  searchFun(){
+      let sBar=document.getElementById("searchBar");
+       
+
+      // let container=document.getElementsByClassName("lowerQuestionForm")[0];
+      // let children=container.children;
+      let val=sBar.value;
+      console.log(val)
+      if(val==''){
+        displayLocalStorage()
+      }
+      else {
+        filtered=arr.filter(function(value){
+          if(value.children[0].children[0].innerText.search(val)!=-1||value.children[0].children[1].innerText.search(val)!=-1){
+            return true;
+          }
+          else {
+            return false;
+          }
+       })
+    console.log(filtered);
+   
+      displayFiltered(filtered,val);
+      }
+    // console.log(children)
+     
+  
+  
+}
+
+function displayFiltered(val,val2){
+  console.log("In Filtered");
+  let container=document.getElementsByClassName("lowerQuestionForm")[0];
+  container.innerHTML=''
+  val.forEach(function(value){
+   let index= value.children[0].children[0].innerText.search(val2)
+   let index2= value.children[0].children[1].innerText.search(val2)
+   console.log(index,index2);
+   console.log(value.children[0].children[0].innerHTML);
+   console.log(value.children[0].children[1].innerHTML);
+   if(index!=-1){
+    value.children[0].children[0].innerHTML=`${value.children[0].children[0].innerText.substring(0,index)}<span style="background-color:green">${value.children[0].children[0].innerText.substring(index,index+val2.length)}</span>${value.children[0].children[0].innerText.substring(index+val2.length)}`
+   }
+   if(index2!=-1){
+    value.children[0].children[1].innerHTML=`${value.children[0].children[1].innerText.substring(0,index)}<span style="background-color:green">${value.children[0].children[1].innerText.substring(index,index+val2.length)}</span>${value.children[0].children[1].innerText.substring(index+val2.length)}`
+    console.log("printing here"+value.children[0].children[1].innerHTML.substring(0,index));
+   }
+    
+    container.appendChild(value);
+  })
+  console.log(val);
+}
+function createArray(){
+  let container=document.getElementsByClassName("lowerQuestionForm")[0];
+  arr=Array.from(container.children).map(function(value){
+         return value;
+  })
+  console.log(arr[0].children[0].children[0])
+  console.log(arr[0].children[0].children[1])
+}
