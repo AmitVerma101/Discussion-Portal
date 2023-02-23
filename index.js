@@ -279,22 +279,26 @@ function  searchFun(){
       // let children=container.children;
       let val=sBar.value;
       console.log(val)
-      if(val==''){
-        displayLocalStorage()
+      if(JSON.parse(localStorage.getItem("item"))!=undefined){
+        arr=JSON.parse(localStorage.getItem("item"));
+        if(val==''){
+          displayLocalStorage()
+        }
+        else {
+          filtered=arr.filter(function(value){
+              if(value.topic.search(val)!=-1||value.question.search(val)!=-1){
+                return true;
+              }
+              else {
+                return false;
+              }
+         })
+      console.log(filtered);
+     
+        displayFiltered(filtered,val);
+        }
       }
-      else {
-        filtered=arr.filter(function(value){
-          if(value.children[0].children[0].innerText.search(val)!=-1||value.children[0].children[1].innerText.search(val)!=-1){
-            return true;
-          }
-          else {
-            return false;
-          }
-       })
-    console.log(filtered);
-   
-      displayFiltered(filtered,val);
-      }
+     
     // console.log(children)
      
   
@@ -302,26 +306,37 @@ function  searchFun(){
 }
 
 function displayFiltered(val,val2){
-  console.log("In Filtered");
+  
   let container=document.getElementsByClassName("lowerQuestionForm")[0];
   container.innerHTML=''
   val.forEach(function(value){
-   let index= value.children[0].children[0].innerText.search(val2)
-   let index2= value.children[0].children[1].innerText.search(val2)
-   console.log(index,index2);
-   console.log(value.children[0].children[0].innerHTML);
-   console.log(value.children[0].children[1].innerHTML);
-   if(index!=-1){
-    value.children[0].children[0].innerHTML=`${value.children[0].children[0].innerText.substring(0,index)}<span style="background-color:green">${value.children[0].children[0].innerText.substring(index,index+val2.length)}</span>${value.children[0].children[0].innerText.substring(index+val2.length)}`
-   }
-   if(index2!=-1){
-    value.children[0].children[1].innerHTML=`${value.children[0].children[1].innerText.substring(0,index2)}<span style="background-color:green">${value.children[0].children[1].innerText.substring(index2,index2+val2.length)}</span>${value.children[0].children[1].innerText.substring(index2+val2.length)}`
-    console.log("printing here"+value.children[0].children[1].innerHTML.substring(0,index2));
-   }
+    let myDiv=document.createElement("div");
+    myDiv.setAttribute("id",`${value.id}`);
+    myDiv.innerHTML=`<button type="button" id="btn${value.id}" class="QuestionsButton" onclick=AddResponsePage(btn${value.id})>
+    <h1 class="QuestionsHeading">${value.topic}</h1>
+    <p class="QuestionsParagraph">${value.question}</p>
     
-    container.appendChild(value);
+    </button>`
+    container.appendChild(myDiv);
   })
-  console.log(val);
+  let array=container.children;
+  Array.from(array).forEach(function(value){
+    console.log(value.children[0].children[0].innerText);
+    console.log(value.children[0].children[1].innerText);
+    let index=value.children[0].children[0].innerText.search(val2);
+    let index2=value.children[0].children[1].innerText.search(val2);
+    console.log(index,index2)
+    if(index!=-1){
+      value.children[0].children[0].innerHTML=`${value.children[0].children[0].innerText.substring(0,index)}<span style="background-color:green">${value.children[0].children[0].innerText.substring(index,index+val2.length)}</span>${value.children[0].children[0].innerText.substring(index+val2.length)}`
+     }
+     if(index2!=-1){
+      value.children[0].children[1].innerHTML=`${value.children[0].children[1].innerText.substring(0,index2)}<span style="background-color:green">${value.children[0].children[1].innerText.substring(index2,index2+val2.length)}</span>${value.children[0].children[1].innerText.substring(index2+val2.length)}`
+      console.log(value.children[0].children[1].innerHTML);
+     }
+  })
+ 
+    
+ 
 }
 function createArray(){
   let container=document.getElementsByClassName("lowerQuestionForm")[0];
