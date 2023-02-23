@@ -328,6 +328,7 @@ function createArray(){
   arr=Array.from(container.children).map(function(value){
          return value;
   })
+  console.log("createArray")
   console.log(arr[0].children[0].children[0])
   console.log(arr[0].children[0].children[1])
 }
