@@ -43,11 +43,14 @@ function displayLocalStorage(){
          // console.log(value)
           let myDiv=document.createElement("div");
           myDiv.setAttribute("id",`${value.id}`);
+          myDiv.setAttribute("class","myDiv")
           myDiv.innerHTML=`<button type="button" id="btn${value.id}" class="QuestionsButton" onclick="AddResponsePage(btn${value.id})">
           <h1 class="QuestionsHeading">${value.topic}</h1>
           <p class="QuestionsParagraph">${value.question}</p>
          
-          </button>`
+          </button>
+        <div><img src=${(value.favourites)?"fillStar.png":'emptyStar.png'} id="img${value.id}" class="star" onclick="AddToFavourites('${value.id}')" alt="chalNikal"><div>`
+        
           LowerQuestionContainer.appendChild(myDiv);
 
          })
@@ -84,13 +87,13 @@ function SaveQuestionToLocalStorage(){
   let tValue2=QuestionFormTextArea.value.trim();
     if(JSON.parse(localStorage.getItem("item"))==undefined){
       obj=[]
-      let it= {id:getI(),topic: tValue,question:tValue2, Responses: []};
+      let it= {id:getI(),topic: tValue,question:tValue2, Responses: [],favourites:false};
       obj.push(it)
       localStorage.setItem("item",JSON.stringify(obj));
     }
     else {
           obj=JSON.parse(localStorage.getItem("item"));
-          let it={id:getI(),topic: tValue,question:tValue2, Responses: []};
+          let it={id:getI(),topic: tValue,question:tValue2, Responses: [],favourites:false};
           obj.push(it);
           localStorage.setItem("item",JSON.stringify(obj));
 
@@ -115,11 +118,13 @@ function displayQuestion(tValue,tValue2){
        // console.log(value)
         let myDiv=document.createElement("div");
         myDiv.setAttribute("id",`${getI()}`);
+        myDiv.setAttribute("class","myDiv")
         myDiv.innerHTML=`<button type="button" id="btn${getI()}" class="QuestionsButton" onclick=AddResponsePage(btn${getI()})>
         <h1 class="QuestionsHeading">${tValue}</h1>
         <p class="QuestionsParagraph">${tValue2}</p>
         
-        </button>`
+        </button>
+        <div><img src="emptyStar.png" id="img${getI()}" class="star" onclick="AddToFavourites('${getI()}')" alt="chalNikal"><div>`
         LowerQuestionContainer.appendChild(myDiv);
     // })
     
@@ -312,11 +317,13 @@ function displayFiltered(val,val2){
   val.forEach(function(value){
     let myDiv=document.createElement("div");
     myDiv.setAttribute("id",`${value.id}`);
+    myDiv.setAttribute("class","myDiv")
     myDiv.innerHTML=`<button type="button" id="btn${value.id}" class="QuestionsButton" onclick=AddResponsePage(btn${value.id})>
     <h1 class="QuestionsHeading">${value.topic}</h1>
     <p class="QuestionsParagraph">${value.question}</p>
     
-    </button>`
+    </button>
+    <div><img src=${(value.favourites)?"fillStar.png":"emptyStar.png"} id="img${value.id}" class="star" onclick="AddToFavourites('${value.id}')" alt="chalNikal"><div>`
     container.appendChild(myDiv);
   })
   let array=container.children;
@@ -338,12 +345,57 @@ function displayFiltered(val,val2){
     
  
 }
-function createArray(){
-  let container=document.getElementsByClassName("lowerQuestionForm")[0];
-  arr=Array.from(container.children).map(function(value){
-         return value;
-  })
-  console.log("createArray")
-  console.log(arr[0].children[0].children[0])
-  console.log(arr[0].children[0].children[1])
+// function createArray(){
+//   let container=document.getElementsByClassName("lowerQuestionForm")[0];
+//   arr=Array.from(container.children).map(function(value){
+//          return value;
+//   })
+//   console.log("createArray")
+//   console.log(arr[0].children[0].children[0])
+//   console.log(arr[0].children[0].children[1])
+// }
+
+function AddToFavourites(val){
+     console.log("hello add to favourites")
+     console.log(val)
+     let img=document.getElementById("img"+val);
+     console.log(img)
+     let count=0;
+     let ans;
+     let obj=JSON.parse(localStorage.getItem("item"));
+     obj.forEach(function(value){
+           if(value.id==parseInt(val)){
+                 ans=count;
+           }
+           count++;
+     })
+    
+     obj=JSON.parse(localStorage.getItem("item"));
+     obj[ans].favourites=!obj[ans].favourites
+     obj.sort(function(a,b){
+         if(a.favourites && b.favourites){
+          return 0;
+         }
+         if(!a.favourites && !b.favourites){
+          return 0;
+         }
+         if(!a.favourites&&b.favourites){
+          return 1;
+         }
+         else {
+          return -1;
+         }
+     })
+     localStorage.setItem("item",JSON.stringify(obj))
+     if(obj[ans].favourites==true){
+      img.setAttribute("src","fillStar.png");
+     }
+     else {
+      img.setAttribute("src","emptyStar.png");
+     }
+     let sBar=document.getElementById("searchBar");
+     if(sBar.value==''){
+      displayLocalStorage()
+     }
+     
 }
