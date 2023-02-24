@@ -379,9 +379,10 @@ function AddToFavourites(val){
            }
            count++;
      })
-    
+    console.log(img)
      obj=JSON.parse(localStorage.getItem("item"));
      obj[ans].favourites=!obj[ans].favourites
+     img.setAttribute("src",obj[ans].favourites?"fillStar.png":"emptyStar.png")
      sortTheList(obj);
     //  obj.sort(function(a,b){
     //      if(a.favourites && b.favourites){
