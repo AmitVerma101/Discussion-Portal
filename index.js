@@ -63,28 +63,7 @@ function displayLocalStorage(){
     }
 }
 
-// function getValue(event){
 
-//   //if key is an enter then storing the element to the local storage
-//   if(event.keyCode==13){
-//     // localStorage.setItem(JSON.stringify(tArea.value));
-//     // addToList();
-//     if(tArea.value.trim()!=''){
-//      addToLocalStorage();
-//      //adding the element on the web page
-//     // addToList();
-     
-//       //incrementing the value of i
-//        let x=JSON.parse(localStorage.getItem("i"));
-//        x++;
-//        localStorage.setItem("i",JSON.stringify(x)); 
-//     }
-//     tArea.value='' 
-    
-//     tArea.blur();
-//     tArea.focus();
-//   }
-// }
 function SaveQuestionToLocalStorage(){
   let QuestionFormInput=document.getElementById("QuestionFormInput");
   let QuestionFormTextArea=document.getElementById("QuestionFormTextArea");
@@ -403,26 +382,27 @@ function AddToFavourites(val){
     
      obj=JSON.parse(localStorage.getItem("item"));
      obj[ans].favourites=!obj[ans].favourites
-     obj.sort(function(a,b){
-         if(a.favourites && b.favourites){
-          if(a.votes>b.votes){
-            return 1;
-          }
-          else{
-            return 0;
-          }
+     sortTheList(obj);
+    //  obj.sort(function(a,b){
+    //      if(a.favourites && b.favourites){
+    //       if(a.votes>b.votes){
+    //         return 1;
+    //       }
+    //       else{
+    //         return 0;
+    //       }
          
-         }
-         if(!a.favourites && !b.favourites){
-          return 0;
-         }
-         if(!a.favourites&&b.favourites){
-          return 1;
-         }
-         else {
-          return -1;
-         }
-     })
+    //      }
+    //      if(!a.favourites && !b.favourites){
+    //       return 0;
+    //      }
+    //      if(!a.favourites&&b.favourites){
+    //       return 1;
+    //      }
+    //      else {
+    //       return -1;
+    //      }
+    //  })
      localStorage.setItem("item",JSON.stringify(obj))
      if(obj[ans].favourites==true){
       img.setAttribute("src","fillStar.png");
@@ -451,24 +431,25 @@ function IncrementVoteCount(val){
   obj[ans].votes+=1;
   let votes=document.getElementById("votes"+obj[ans].id)
   votes.innerText=`votes: ${obj[ans].votes}`
-  obj.sort(function(a,b){
-    if(a.favourites&&b.favourites ||!a.favourites&&!b.favourites){
-         if(a.votes>=b.votes){
-          return -1;
-         }
-         else {
-          return 1;
-         }
+  sortTheList(obj);
+//   obj.sort(function(a,b){
+//     if(a.favourites&&b.favourites ||!a.favourites&&!b.favourites){
+//          if(a.votes>=b.votes){
+//           return -1;
+//          }
+//          else {
+//           return 1;
+//          }
 
-    }
-    else if(a.favourites&&!b.favourites){
-          return -1;
-    }
-    else {
-        return 1;
-    }
+//     }
+//     else if(a.favourites&&!b.favourites){
+//           return -1;
+//     }
+//     else {
+//         return 1;
+//     }
    
-})
+// })
   
   localStorage.setItem("item",JSON.stringify(obj));
   let sBar=document.getElementById("searchBar");
@@ -493,24 +474,25 @@ function DecrementVoteCount(val){
     let votes=document.getElementById("votes"+obj[ans].id)
     votes.innerText=`votes: ${obj[ans].votes}`
   }
-  obj.sort(function(a,b){
-    if(a.favourites&&b.favourites ||!a.favourites&&!b.favourites){
-         if(a.votes>=b.votes){
-          return -1;
-         }
-         else {
-          return 1;
-         }
+  sortTheList(obj);
+//   obj.sort(function(a,b){
+//     if(a.favourites&&b.favourites ||!a.favourites&&!b.favourites){
+//          if(a.votes>=b.votes){
+//           return -1;
+//          }
+//          else {
+//           return 1;
+//          }
 
-    }
-    else if(a.favourites&&!b.favourites){
-          return -1;
-    }
-    else {
-        return 1;
-    }
+//     }
+//     else if(a.favourites&&!b.favourites){
+//           return -1;
+//     }
+//     else {
+//         return 1;
+//     }
    
-})
+// })
   
  
   localStorage.setItem("item",JSON.stringify(obj));
@@ -519,4 +501,23 @@ function DecrementVoteCount(val){
    displayLocalStorage()
   }
   console.log("In DecrementVoteCount "+val);
+}
+
+function sortTheList(val){
+  val.sort(function(a,b){
+    if(a.favourites&&b.favourites||!a.favourites&&!b.favourites){
+        if(a.votes>b.votes){
+           return -1;
+        }
+        else {
+          return 1;
+        }
+    }
+    else if(a.favourites&&!b.favourites){
+         return -1;
+    }
+    else {
+      return 1;
+    }
+  })
 }
