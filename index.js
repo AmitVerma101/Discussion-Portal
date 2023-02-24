@@ -49,6 +49,11 @@ function displayLocalStorage(){
           <p class="QuestionsParagraph">${value.question}</p>
          
           </button>
+          <div>
+             <img src="thumbsUpEmpty.png" class="vote" onclick="IncrementVoteCount('${value.id}')">
+             <img src="thumbsDownEmpty.jpg" class="vote" onclick="DecrementVoteCount('${value.id}')">
+              <p id="votes${value.id}">votes: ${value.votes}<p>
+          </div>
         <div><img src=${(value.favourites)?"fillStar.png":'emptyStar.png'} id="img${value.id}" class="star" onclick="AddToFavourites('${value.id}')" alt="chalNikal"><div>`
         
           LowerQuestionContainer.appendChild(myDiv);
@@ -58,51 +63,55 @@ function displayLocalStorage(){
     }
 }
 
-function getValue(event){
+// function getValue(event){
 
-  //if key is an enter then storing the element to the local storage
-  if(event.keyCode==13){
-    // localStorage.setItem(JSON.stringify(tArea.value));
-    // addToList();
-    if(tArea.value.trim()!=''){
-     addToLocalStorage();
-     //adding the element on the web page
-    // addToList();
+//   //if key is an enter then storing the element to the local storage
+//   if(event.keyCode==13){
+//     // localStorage.setItem(JSON.stringify(tArea.value));
+//     // addToList();
+//     if(tArea.value.trim()!=''){
+//      addToLocalStorage();
+//      //adding the element on the web page
+//     // addToList();
      
-      //incrementing the value of i
-       let x=JSON.parse(localStorage.getItem("i"));
-       x++;
-       localStorage.setItem("i",JSON.stringify(x)); 
-    }
-    tArea.value='' 
+//       //incrementing the value of i
+//        let x=JSON.parse(localStorage.getItem("i"));
+//        x++;
+//        localStorage.setItem("i",JSON.stringify(x)); 
+//     }
+//     tArea.value='' 
     
-    tArea.blur();
-    tArea.focus();
-  }
-}
+//     tArea.blur();
+//     tArea.focus();
+//   }
+// }
 function SaveQuestionToLocalStorage(){
   let QuestionFormInput=document.getElementById("QuestionFormInput");
   let QuestionFormTextArea=document.getElementById("QuestionFormTextArea");
   let tValue=QuestionFormInput.value.trim();
   let tValue2=QuestionFormTextArea.value.trim();
+  if(tValue!=''&&tValue2!=''){
     if(JSON.parse(localStorage.getItem("item"))==undefined){
       obj=[]
-      let it= {id:getI(),topic: tValue,question:tValue2, Responses: [],favourites:false};
+      let it= {id:getI(),topic: tValue,question:tValue2, Responses: [],favourites:false,votes:0};
       obj.push(it)
       localStorage.setItem("item",JSON.stringify(obj));
     }
     else {
           obj=JSON.parse(localStorage.getItem("item"));
-          let it={id:getI(),topic: tValue,question:tValue2, Responses: [],favourites:false};
+          let it={id:getI(),topic: tValue,question:tValue2, Responses: [],favourites:false,votes:0};
           obj.push(it);
           localStorage.setItem("item",JSON.stringify(obj));
 
     }
    // displayLocalStorage();
+
       displayQuestion(tValue,tValue2);
       let x=JSON.parse(localStorage.getItem("i"));
       x++;
       localStorage.setItem("i",JSON.stringify(x)); 
+  }
+   
     }
   //  console.log(localStorage.getItem("item1"))
    // console.log(subject,question);
@@ -116,6 +125,16 @@ function displayQuestion(tValue,tValue2){
    // upperQuestionContainer.innerHTML='';
     // local.forEach(function(value){
        // console.log(value)
+       obj=JSON.parse(localStorage.getItem("item"));
+       let count=0;
+       let ans;
+       obj.forEach(function(value){
+           if(value.id==getI()){
+             ans=count;
+             console.log("Inside delete from Local Storage");
+           }
+           count++;
+       })
         let myDiv=document.createElement("div");
         myDiv.setAttribute("id",`${getI()}`);
         myDiv.setAttribute("class","myDiv")
@@ -124,6 +143,11 @@ function displayQuestion(tValue,tValue2){
         <p class="QuestionsParagraph">${tValue2}</p>
         
         </button>
+        <div>
+        <img src="thumbsUpEmpty.png" class="vote" onclick="IncrementVoteCount('${getI()}')">
+        <img src="thumbsDownEmpty.jpg" class="vote" onclick="DecrementVoteCount('${getI()}')">
+        <p id="votes${getI()}">votes: ${obj[ans].votes}<p>
+        </div>
         <div><img src="emptyStar.png" id="img${getI()}" class="star" onclick="AddToFavourites('${getI()}')" alt="chalNikal"><div>`
         LowerQuestionContainer.appendChild(myDiv);
     // })
@@ -242,6 +266,7 @@ function AddResponse(val1){
  
  let response=document.getElementById("Response").value;
  console.log(name,response)
+ if(name!=''&&response!=''){
  let AddResponseContainer=document.getElementById("AddResponses");
  AddResponseContainer.style.backgroundColor="gray"
  console.log(AddResponseContainer)
@@ -252,6 +277,7 @@ function AddResponse(val1){
  console.log("Before")
  AddResponsesToLocalStorage(name,response,val1);
  console.log("here")
+ }
 }
 
 
@@ -323,6 +349,11 @@ function displayFiltered(val,val2){
     <p class="QuestionsParagraph">${value.question}</p>
     
     </button>
+    <div>
+    <img src="thumbsUpEmpty.png" class="vote" onclick="IncrementVoteCount('${value.id}')">
+    <img src="thumbsDownEmpty.jpg" class="vote" onclick="DecrementVoteCount('${value.id}')">
+    <p id="votes${value.id}">votes: ${value.votes}<p>
+    </div>
     <div><img src=${(value.favourites)?"fillStar.png":"emptyStar.png"} id="img${value.id}" class="star" onclick="AddToFavourites('${value.id}')" alt="chalNikal"><div>`
     container.appendChild(myDiv);
   })
@@ -374,7 +405,13 @@ function AddToFavourites(val){
      obj[ans].favourites=!obj[ans].favourites
      obj.sort(function(a,b){
          if(a.favourites && b.favourites){
-          return 0;
+          if(a.votes>b.votes){
+            return 1;
+          }
+          else{
+            return 0;
+          }
+         
          }
          if(!a.favourites && !b.favourites){
           return 0;
@@ -398,4 +435,88 @@ function AddToFavourites(val){
       displayLocalStorage()
      }
      
+}
+
+function IncrementVoteCount(val){
+  obj=JSON.parse(localStorage.getItem("item"));
+  let count=0;
+  let ans;
+  obj.forEach(function(value){
+      if(value.id==val){
+        ans=count;
+        console.log("Inside delete from Local Storage");
+      }
+      count++;
+  })
+  obj[ans].votes+=1;
+  let votes=document.getElementById("votes"+obj[ans].id)
+  votes.innerText=`votes: ${obj[ans].votes}`
+  obj.sort(function(a,b){
+    if(a.favourites&&b.favourites ||!a.favourites&&!b.favourites){
+         if(a.votes>=b.votes){
+          return -1;
+         }
+         else {
+          return 1;
+         }
+
+    }
+    else if(a.favourites&&!b.favourites){
+          return -1;
+    }
+    else {
+        return 1;
+    }
+   
+})
+  
+  localStorage.setItem("item",JSON.stringify(obj));
+  let sBar=document.getElementById("searchBar");
+  if(sBar.value==''){
+   displayLocalStorage()
+  }
+  console.log("In IncrementVoteCount "+val);
+}
+function DecrementVoteCount(val){
+  obj=JSON.parse(localStorage.getItem("item"));
+  let count=0;
+  let ans;
+  obj.forEach(function(value){
+      if(value.id==val){
+        ans=count;
+        console.log("Inside delete from Local Storage");
+      }
+      count++;
+  })
+  if(obj[ans].votes>=1){
+    obj[ans].votes-=1;
+    let votes=document.getElementById("votes"+obj[ans].id)
+    votes.innerText=`votes: ${obj[ans].votes}`
+  }
+  obj.sort(function(a,b){
+    if(a.favourites&&b.favourites ||!a.favourites&&!b.favourites){
+         if(a.votes>=b.votes){
+          return -1;
+         }
+         else {
+          return 1;
+         }
+
+    }
+    else if(a.favourites&&!b.favourites){
+          return -1;
+    }
+    else {
+        return 1;
+    }
+   
+})
+  
+ 
+  localStorage.setItem("item",JSON.stringify(obj));
+  let sBar=document.getElementById("searchBar");
+  if(sBar.value==''){
+   displayLocalStorage()
+  }
+  console.log("In DecrementVoteCount "+val);
 }

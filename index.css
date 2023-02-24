@@ -127,3 +127,7 @@
     border:1px solid black;
     background-color: white;
 }
+.vote {
+    width: 30px;
+    height: 30px;
+}
