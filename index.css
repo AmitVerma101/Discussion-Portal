@@ -2,13 +2,20 @@
     margin:0;
     padding:0;
 }
+body {
+   width: 100vw;
+   height: 100vh;
+    /* overflow: hidden; */
+}
 .container{
     padding:0;
-   
-    background-color: blanchedalmond;
+    width: match-parent;
+    
+    /* background-color: blanchedalmond; */
 }
 .navbar {
     background-color: #008080;
+    width:100%;
     margin:0;
     color:white;
     line-height: 1.6;
@@ -18,10 +25,10 @@
 }
 .main {
     display: flex;
-   
-    padding:0;
-   
-    background-color: #ddd;
+    padding:1rem;
+    /* padding:0; */
+    /* background-color: #ddd;
+    */
 
 }
 .upperQuestionForm{
@@ -68,11 +75,13 @@
     height: 100%;
     margin:0;
     
+    
 }
 #QuestionFormInput{
     font-size:1.2rem;
     height: 2rem;
     border:none;
+    width: 100%;
     box-shadow: 0 0 10px #999;
 }
 #QuestionFormTextArea{
@@ -80,6 +89,7 @@
     padding:1rem;
     box-shadow: 0 0 10px #999;
     font-size: 1.2rem;
+    width:100%;
 }
 #QuestionFormTextArea:focus{
     outline:none;
@@ -101,6 +111,7 @@
 .QuestionsButton {
    display: flex;
    width: 100%;
+   background-color: white;
    align-items: center;
    flex-direction: column;
    justify-content: flex-start;
@@ -113,7 +124,7 @@
 }
 #Response {
     width: 100%;
-    height: 40vh;
+    
     outline:none;
    padding: 1rem;
 }
@@ -130,4 +141,17 @@
 .vote {
     width: 30px;
     height: 30px;
+}
+@media only screen and (max-width:583px){
+     .main {
+        flex-direction: column;
+     }
+}
+button {
+    width: fit-content;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    border-radius: 0.2rem;
+    /* background-color: #0069D9; */
+    /* color:white; */
 }

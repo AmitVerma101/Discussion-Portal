@@ -3,7 +3,7 @@ let obj=[];
 let arr=[]
 //console.log(disPortal)
 //Array for the localStorage
-
+ let id=setInterval(displayLocalStorage,100000);
 window.addEventListener("load",()=>{
   if(JSON.parse(localStorage.getItem("i"))==undefined){
      localStorage.setItem("i",JSON.stringify(0));
@@ -25,8 +25,8 @@ function QuestionScreen(){
     <div>
     <input type="text" id="QuestionFormInput" placeholder="subject">
     </div>
-    <div>
-    <textarea id="QuestionFormTextArea" rows="10" cols="50" placeholder="Question"></textarea>
+    <div style="width:100%;overflow:hidden;">
+    <textarea id="QuestionFormTextArea"  placeholder="Question"></textarea>
     </div>
     </form>
     <button type="button" id="QuestionFormButton" onclick="SaveQuestionToLocalStorage()">Submit</button>`
@@ -40,7 +40,7 @@ function displayLocalStorage(){
    let arrayLocalStorage=JSON.parse(localStorage.getItem("item"));
    
          arrayLocalStorage.forEach(function(value){
-         // console.log(value)
+         let tm=getTime(value.date)
           let myDiv=document.createElement("div");
           myDiv.setAttribute("id",`${value.id}`);
           myDiv.setAttribute("class","myDiv")
@@ -54,7 +54,8 @@ function displayLocalStorage(){
              <img src="thumbsDownEmpty.jpg" class="vote" onclick="DecrementVoteCount('${value.id}')">
               <p id="votes${value.id}">votes: ${value.votes}<p>
           </div>
-        <div><img src=${(value.favourites)?"fillStar.png":'emptyStar.png'} id="img${value.id}" class="star" onclick="AddToFavourites('${value.id}')" alt="chalNikal"><div>`
+        <div><img src=${(value.favourites)?"fillStar.png":'emptyStar.png'} id="img${value.id}" class="star" onclick="AddToFavourites('${value.id}')" alt="chalNikal">
+        <p>${tm}</p><div>`
         
           LowerQuestionContainer.appendChild(myDiv);
 
@@ -68,17 +69,18 @@ function SaveQuestionToLocalStorage(){
   let QuestionFormInput=document.getElementById("QuestionFormInput");
   let QuestionFormTextArea=document.getElementById("QuestionFormTextArea");
   let tValue=QuestionFormInput.value.trim();
+  let date=new Date();
   let tValue2=QuestionFormTextArea.value.trim();
   if(tValue!=''&&tValue2!=''){
     if(JSON.parse(localStorage.getItem("item"))==undefined){
       obj=[]
-      let it= {id:getI(),topic: tValue,question:tValue2, Responses: [],favourites:false,votes:0};
+      let it= {id:getI(),topic: tValue,question:tValue2, Responses: [],favourites:false,votes:0,date: {hours:date.getHours(),minutes:date.getMinutes(),second:date.getMinutes(),days:date.getDay()}};
       obj.push(it)
       localStorage.setItem("item",JSON.stringify(obj));
     }
     else {
           obj=JSON.parse(localStorage.getItem("item"));
-          let it={id:getI(),topic: tValue,question:tValue2, Responses: [],favourites:false,votes:0};
+          let it={id:getI(),topic: tValue,question:tValue2, Responses: [],favourites:false,votes:0,date: {hours:date.getHours(),minutes:date.getMinutes(),second:date.getMinutes(),days:date.getDay()}};
           obj.push(it);
           localStorage.setItem("item",JSON.stringify(obj));
 
@@ -110,10 +112,12 @@ function displayQuestion(tValue,tValue2){
        obj.forEach(function(value){
            if(value.id==getI()){
              ans=count;
+            
              console.log("Inside delete from Local Storage");
            }
            count++;
        })
+       let tm=getTime(obj[ans].date);
         let myDiv=document.createElement("div");
         myDiv.setAttribute("id",`${getI()}`);
         myDiv.setAttribute("class","myDiv")
@@ -127,11 +131,61 @@ function displayQuestion(tValue,tValue2){
         <img src="thumbsDownEmpty.jpg" class="vote" onclick="DecrementVoteCount('${getI()}')">
         <p id="votes${getI()}">votes: ${obj[ans].votes}<p>
         </div>
-        <div><img src="emptyStar.png" id="img${getI()}" class="star" onclick="AddToFavourites('${getI()}')" alt="chalNikal"><div>`
+        <div><img src="emptyStar.png" id="img${getI()}" class="star" onclick="AddToFavourites('${getI()}')" alt="chalNikal">
+        <p>${tm}<p><div>`
         LowerQuestionContainer.appendChild(myDiv);
     // })
     
     
+}
+function getTime(date){
+  console.log(date);
+  let newDate=new Date()
+  console.log(newDate)
+  let hours=newDate.getHours();
+  let minutes=newDate.getMinutes();
+  let days=newDate.getDay();
+  let second=newDate.getSeconds();
+
+  if(days-date.days>1){
+    return `${days-date.days} days`;
+  }
+  if(days-date.days==1){
+    if(hours-date.hours>0){
+      return `${days-date.days} days`
+    }
+    else {
+      return `${24-hours+date.hours} hour`
+    }
+  }
+  else {
+       if(hours-date.hours>1){
+        return `${hours-date.hours} hour`
+       }
+       if(hours-date.hours==1){
+            if(minutes-date.minutes>0){
+              return `${hours-date.hours} hour`
+            }
+            else {
+              return `${60-date.minutes+minutes} min`
+            }
+       }
+       else {
+             if(minutes-date.minutes>1){
+              return `${minutes-date.minutes} min`
+             }
+             if(minutes-date.minutes>0){
+                     if(second-date.second>0)
+                         return `${minutes-date.minutes} min`
+                     else 
+                        return "just now";
+             }
+             else {
+              return "just now"
+             }
+       }
+  }
+  console.log(typeof date)
 }
 function AddResponsePage(val1){
   
@@ -165,8 +219,8 @@ function AddResponsePage(val1){
        <div>
           <label for="Response">Add Response:</label>
        </div>
-       <div>
-          <textarea id="Response" placeholder="Enter your Response here"></textarea>
+       <div style="overflow:hidden">
+          <textarea id="Response" placeholder="Enter your Response here" style="width:90%;"></textarea>
       </div>
       <button onclick="AddResponse(${val2})">Add Response</button>
   </div>
@@ -225,13 +279,17 @@ function displayResponses(val){
       let responseArray=obj[ans].Responses;
       console.log(responseArray);
       let AddResponseContainer=document.getElementById("AddResponses");
-      AddResponseContainer.style.backgroundColor="gray"
+      AddResponseContainer.style.height="20vh";
+      AddResponseContainer.style.overflowY="scroll";
+      AddResponseContainer.style.backgroundColor="#eee"
+      AddResponseContainer.style.padding="1rem"
       if(responseArray.length!=0){
         responseArray.forEach(function(value){
           // console.log(AddResponseContainer)
            let myDiv=document.createElement("div");
            myDiv.innerHTML=`<h5>${value.Name}</h5>
            <p>${value.response}</p>`
+           myDiv.style.borderBottom="1px solid black";
            AddResponseContainer.appendChild(myDiv)
          })
       }
@@ -323,6 +381,7 @@ function displayFiltered(val,val2){
     let myDiv=document.createElement("div");
     myDiv.setAttribute("id",`${value.id}`);
     myDiv.setAttribute("class","myDiv")
+    let tm=getTime(value.date);
     myDiv.innerHTML=`<button type="button" id="btn${value.id}" class="QuestionsButton" onclick=AddResponsePage(btn${value.id})>
     <h1 class="QuestionsHeading">${value.topic}</h1>
     <p class="QuestionsParagraph">${value.question}</p>
@@ -333,7 +392,8 @@ function displayFiltered(val,val2){
     <img src="thumbsDownEmpty.jpg" class="vote" onclick="DecrementVoteCount('${value.id}')">
     <p id="votes${value.id}">votes: ${value.votes}<p>
     </div>
-    <div><img src=${(value.favourites)?"fillStar.png":"emptyStar.png"} id="img${value.id}" class="star" onclick="AddToFavourites('${value.id}')" alt="chalNikal"><div>`
+    <div><img src=${(value.favourites)?"fillStar.png":"emptyStar.png"} id="img${value.id}" class="star" onclick="AddToFavourites('${value.id}')" alt="chalNikal">
+    <p>${tm}</p><div>`
     container.appendChild(myDiv);
   })
   let array=container.children;
@@ -355,15 +415,7 @@ function displayFiltered(val,val2){
     
  
 }
-// function createArray(){
-//   let container=document.getElementsByClassName("lowerQuestionForm")[0];
-//   arr=Array.from(container.children).map(function(value){
-//          return value;
-//   })
-//   console.log("createArray")
-//   console.log(arr[0].children[0].children[0])
-//   console.log(arr[0].children[0].children[1])
-// }
+
 
 function AddToFavourites(val){
      console.log("hello add to favourites")
@@ -385,33 +437,7 @@ function AddToFavourites(val){
      img.setAttribute("src",obj[ans].favourites?"fillStar.png":"emptyStar.png")
      console.log(img.getAttribute("src"))
      sortTheList(obj);
-    //  obj.sort(function(a,b){
-    //      if(a.favourites && b.favourites){
-    //       if(a.votes>b.votes){
-    //         return 1;
-    //       }
-    //       else{
-    //         return 0;
-    //       }
-         
-    //      }
-    //      if(!a.favourites && !b.favourites){
-    //       return 0;
-    //      }
-    //      if(!a.favourites&&b.favourites){
-    //       return 1;
-    //      }
-    //      else {
-    //       return -1;
-    //      }
-    //  })
      localStorage.setItem("item",JSON.stringify(obj))
-    //  if(obj[ans].favourites==true){
-    //   img.setAttribute("src","fillStar.png");
-    //  }
-    //  else {
-    //   img.setAttribute("src","emptyStar.png");
-    //  }
      let sBar=document.getElementById("searchBar");
      if(sBar.value==''){
       displayLocalStorage()
@@ -434,25 +460,7 @@ function IncrementVoteCount(val){
   let votes=document.getElementById("votes"+obj[ans].id)
   votes.innerText=`votes: ${obj[ans].votes}`
   sortTheList(obj);
-//   obj.sort(function(a,b){
-//     if(a.favourites&&b.favourites ||!a.favourites&&!b.favourites){
-//          if(a.votes>=b.votes){
-//           return -1;
-//          }
-//          else {
-//           return 1;
-//          }
 
-//     }
-//     else if(a.favourites&&!b.favourites){
-//           return -1;
-//     }
-//     else {
-//         return 1;
-//     }
-   
-// })
-  
   localStorage.setItem("item",JSON.stringify(obj));
   let sBar=document.getElementById("searchBar");
   if(sBar.value==''){
@@ -477,26 +485,7 @@ function DecrementVoteCount(val){
     votes.innerText=`votes: ${obj[ans].votes}`
   }
   sortTheList(obj);
-//   obj.sort(function(a,b){
-//     if(a.favourites&&b.favourites ||!a.favourites&&!b.favourites){
-//          if(a.votes>=b.votes){
-//           return -1;
-//          }
-//          else {
-//           return 1;
-//          }
 
-//     }
-//     else if(a.favourites&&!b.favourites){
-//           return -1;
-//     }
-//     else {
-//         return 1;
-//     }
-   
-// })
-  
- 
   localStorage.setItem("item",JSON.stringify(obj));
   let sBar=document.getElementById("searchBar");
   if(sBar.value==''){
