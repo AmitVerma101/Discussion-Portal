@@ -383,6 +383,7 @@ function AddToFavourites(val){
      obj=JSON.parse(localStorage.getItem("item"));
      obj[ans].favourites=!obj[ans].favourites
      img.setAttribute("src",obj[ans].favourites?"fillStar.png":"emptyStar.png")
+     console.log(img.getAttribute("src"))
      sortTheList(obj);
     //  obj.sort(function(a,b){
     //      if(a.favourites && b.favourites){
@@ -405,12 +406,12 @@ function AddToFavourites(val){
     //      }
     //  })
      localStorage.setItem("item",JSON.stringify(obj))
-     if(obj[ans].favourites==true){
-      img.setAttribute("src","fillStar.png");
-     }
-     else {
-      img.setAttribute("src","emptyStar.png");
-     }
+    //  if(obj[ans].favourites==true){
+    //   img.setAttribute("src","fillStar.png");
+    //  }
+    //  else {
+    //   img.setAttribute("src","emptyStar.png");
+    //  }
      let sBar=document.getElementById("searchBar");
      if(sBar.value==''){
       displayLocalStorage()
